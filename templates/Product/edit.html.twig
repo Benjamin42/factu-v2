@@ -1,0 +1,26 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}
+  Edition du produit - {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+  <h2>Edition du produit</h2>
+
+  <p>
+  {% for message in app.session.flashbag.get('notice') %}
+    <div class="alert alert-success" role="alert">{{ message }}</div>
+  {% endfor %}
+  </p>
+
+  {{ include("Product/form.html.twig") }}
+
+  <p>
+    <a href="{{ path('product_view', {'id': product.id }) }}" class="btn btn-default">
+      <i class="glyphicon glyphicon-chevron-left"></i>
+      Retour produit
+    </a>
+  </p>
+
+{% endblock %}

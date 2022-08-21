@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Factu</title>
+
+    <link rel="stylesheet" href="{{ asset('assets/dist/css/bootstrap.min.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ asset('assets/dist/css/jquery.dataTables.min.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ asset('assets/dist/css/bootstrap-datepicker3.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('assets/dist/css/chosen.css') }}" type="text/css">
+
+    <style>
+        .very-small {
+            font-size: 65%;
+        }
+
+        .print {
+            display: none;
+        }
+
+        #table-stats span, #table span, #table-commande span, #table-bdl span {
+            display: none;
+        }
+
+        @media print {
+            html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                font-size: 20px;
+            }
+
+            .no-print {
+                display: none;
+            }
+
+            .print {
+                display: block;
+            }
+
+            div.footer {
+                position: absolute;
+                bottom: 0;
+            }
+        }
+    </style>
+
+    <link rel="stylesheet" href="{{ asset('assets/css/datepicker.css') }}" type="text/css"/>
+
+    <script src="{{ asset('assets/dist/js/jquery.min.js') }}"></script>
+    <script src="{{ asset('assets/dist/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('assets/dist/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/dist/js/bootstrap-datepicker.min.js') }}"></script>
+    <script src="{{ asset('assets/dist/js/bootstrap-datepicker.fr.min.js') }}"></script>
+
+    <script type="text/javascript" src="{{ asset('assets/dist/js/amcharts.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/dist/js/serial.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/dist/js/themes/none.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/dist/js/chosen.jquery.js') }}"></script>
+
+    <script>
+
+        var dataTableDefaultParam = {
+            //lengthMenu: [[10, 20, 50, -1], [10, 20, 50, "All"]],
+            language: {
+                processing: "Traitement en cours...",
+                search: "Rechercher&nbsp;:",
+                lengthMenu: "Afficher _MENU_ &eacute;l&eacute;ments",
+                info: "Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
+                infoEmpty: "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
+                infoFiltered: "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
+                infoPostFix: "",
+                loadingRecords: "Chargement en cours...",
+                zeroRecords: "Aucun &eacute;l&eacute;ment &agrave; afficher",
+                emptyTable: "Aucune donnée disponible dans le tableau",
+                paginate: {
+                    first: "Premier",
+                    previous: "Pr&eacute;c&eacute;dent",
+                    next: "Suivant",
+                    last: "Dernier"
+                },
+                aria: {
+                    sortAscending: ": activer pour trier la colonne par ordre croissant",
+                    sortDescending: ": activer pour trier la colonne par ordre décroissant"
+                }
+            }
+        };
+
+        var dataTableStatsParam = jQuery.extend({}, dataTableDefaultParam);
+        dataTableStatsParam["filter"] = false;
+        dataTableStatsParam["paging"] = false;
+
+        var dataTableCommandeParam = jQuery.extend({}, dataTableDefaultParam);
+        dataTableCommandeParam["order"] = [[4, "desc"]];
+
+        var dataTableBdlParam = jQuery.extend({}, dataTableDefaultParam);
+        dataTableBdlParam["order"] = [[4, "desc"]];
+
+        $(document).ready(function () {
+            $('.chosen').chosen();
+
+            $('.datepicker').datepicker({
+                language: "fr",
+                format: "dd/mm/yyyy",
+                autoclose: true,
+                todayHighlight: true
+            });
+
+            $('.datepicker-month').datepicker({
+                language: "fr",
+                format: "mm/yyyy",
+                minViewMode: 1,
+                autoclose: true
+            });
+
+            $('#table').DataTable(dataTableDefaultParam);
+
+            $('#table-stats').DataTable(dataTableStatsParam);
+
+            $('#table-commande').DataTable(dataTableCommandeParam);
+
+            $('#table-bdl').DataTable(dataTableBdlParam);
+
+        });
+    </script>
+</head>
+
+<body>
+
+
+<nav class="navbar navbar-inverse navbar-static-top">
+    <div class="container">
+
+        <div class="navbar-header">
+            <a class="navbar-brand glyphicon glyphicon-home" href="{{ path('home') }}"></a>
+        </div>
+
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Catalogue<span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="{{ path('product_home') }}">Produits</a></li>
+                        <li><a href="{{ path('service_home') }}">Services</a></li>
+                    </ul>
+                </li>
+
+
+            </ul>
+
+        </div>
+</nav>
+
+{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+    <nav class="navbar navbar-inverse navbar-static-top">
+        <div class="container">
+
+            <div class="navbar-header">
+                <a class="navbar-brand glyphicon glyphicon-home" href="{{ path('home' ) }}"></a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Catalogue<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="{{ path('product_home') }}">Produits</a></li>
+                            <li><a href="{{ path('service_home') }}">Services</a></li>
+                        </ul>
+                    </li>
+
+                    <li class=""><a href="{{ path('client_home') }}">Clients</a></li>
+
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Facturation <span
+                                    class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="{{ path('commande_home') }}">Facture</a></li>
+                            <li><a href="{{ path('bdl_home') }}">Bon de livraison</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <div class="glyphicon glyphicon-stats"></div>&nbsp;Stats <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="{{ path('stat_end_month') }}">Fin de mois</a></li>
+                            <li><a href="{{ path('stat_chart_month') }}">Graphique mois</a></li>
+                        </ul>
+                    </li>
+
+                    {% if app.session.get('nbCmdToDeliver') > 0 %}
+                        <li class="">
+                            <a href="{{ path('map_delivery') }}">
+                                <div class="glyphicon glyphicon-globe"></div>
+                                &nbsp;Carte des livraisons&nbsp;<span
+                                        class="badge">{{ app.session.get('nbCmdToDeliver') }}</span>
+
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <div class="glyphicon glyphicon-envelope"></div>&nbsp;Mailing <span
+                                    class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#">Envoi</a></li>
+                            <li><a href="#">Liste</a></li>
+                        </ul>
+                    </li>
+
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <div class="glyphicon glyphicon-cog"></div>&nbsp;<span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="{{ path('parameter_home') }}">Paramétrage</a></li>
+                                <li><a href="{{ path('type_home') }}">Types</a></li>
+                                <li><a href="{{ path('import_csv_home') }}">Imports</a></li>
+                                <li><a href="{{ path('user_home') }}">Utilisateurs</a></li>
+                            </ul>
+                        </li>
+                    {% endif %}
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <div class="glyphicon glyphicon-user"></div>&nbsp;{{ app.user.formatedLabel }} <span
+                                    class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="{{ path('user_edit_profil') }}">Modifier mon compte</a></li>
+                            <li><a href="{{ path('logout') }}">Déconnexion</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+            </div>
+
+        </div>
+    </nav>
+{% endif %}
+
+<div class="container">
+
+    <div class="row">
+
+        {% block body %}
+        {% endblock %}
+
+    </div>
+
+</div>
+
+</body>
+</html>
