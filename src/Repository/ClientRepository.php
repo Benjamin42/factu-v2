@@ -20,32 +20,39 @@ class ClientRepository extends ServiceEntityRepository
         parent::__construct($registry, Client::class);
     }
 
-	public function getNextNumClient() {
-	    $query = $this->getEntityManager()
-	        ->createQuery('SELECT c FROM FactuAppBundle:Client c ORDER BY c.numClient desc')
-	        ->setMaxResults(1);
-	        
-	    try {
-	    	$client = $query->getSingleResult();
-	    	if ($client != null) {
-	    		return $client->getNumClient() + 1;
-	    	} else {
-	        	return 0;
-	        } 
-	    } catch (\Doctrine\ORM\NoResultException $e) {
-	        return null;
-	    }
-	}
+    public function getNextNumClient()
+    {
+        try {
+            $client = $this->createQueryBuilder('c')
+                ->orderBy("c.numClient", "desc")
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getSingleResult();
+            if ($client != null) {
+                return $client->getNumClient() + 1;
+            } else {
+                return 0;
+            }
+        } catch (\Doctrine\ORM\NoResultException $e) {
+            return null;
+        }
+    }
 
-	public function getLastAdded() {
-	    $query = $this->getEntityManager()
-	        ->createQuery('SELECT c FROM FactuAppBundle:Client c ORDER BY c.id desc')
-	        ->setMaxResults(3);
-	        
-	    try {
-	    	return $query->getResult();
-	    } catch (\Doctrine\ORM\NoResultException $e) {
-	        return 1;
-	    }
-	}
+    public function getLastAdded()
+    {
+        return $this->createQueryBuilder('c')
+            ->orderBy('c.id', 'desc')
+            ->setMaxResults(3)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function remove(Client $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
 }

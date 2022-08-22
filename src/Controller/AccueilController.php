@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\ClientRepository;
 use App\Repository\PriceRepository;
 use App\Repository\ProductCategoryRepository;
 use App\Repository\ProductRepository;
@@ -12,16 +13,23 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AccueilController extends AbstractController
 {
+    private $clientRepository;
 
-    #[Route('/home', name: 'home')]
+    public function __construct(ClientRepository $clientRepository)
+    {
+        $this->clientRepository = $clientRepository;
+    }
+
+    #[Route('/', name: 'home')]
     public function indexAction(Request $request)
     {
-        $number = random_int(0, 100);
+
+        $listClient = $this->clientRepository->getLastAdded();
 
         return $this->render('Accueil/index.html.twig', [
             'listCommande' => [],
             'listBdl' => [],
-            'listClient' => [],
+            'listClient' => $listClient
         ]);
     }
 }
