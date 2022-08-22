@@ -1,0 +1,211 @@
+
+<div class="well">
+  {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+
+    {{ form_errors(form) }}
+
+    <div class="row">
+      <div class="col-md-6">
+
+        {# Num Bdl #}
+        <div class="form-group">
+          {{ form_label(form.numBdl, "Num Bdl", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+
+          <div class="col-sm-8">
+            {{ form_widget(form.numBdl, {'attr': {'class': 'form-control'}}) }}
+          </div>
+
+          {{ form_errors(form.numBdl) }}
+        </div>
+
+
+        {# Client #}
+        <div class="form-group">
+          {{ form_label(form.client, "Client", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+
+          {{ form_errors(form.client) }}
+
+          <div class="col-sm-8">
+            {{ form_widget(form.client, {'attr': {'class': 'form-control chosen'}}) }}
+          </div>
+        </div>
+
+
+        {# Title #}
+        <div class="form-group">
+          {{ form_label(form.title, "Titre", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+
+          {{ form_errors(form.title) }}
+
+          <div class="col-sm-8">
+            {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+          </div>
+        </div>
+
+
+        {# Date bdl #}
+        <div class="form-group">
+          {{ form_label(form.dateBdl, "Date Bdl", {'label_attr': {'class': 'col-sm-3 control-label'}}) }}
+
+          {{ form_errors(form.dateBdl) }}
+
+          <div class="col-sm-8">
+            {{ form_widget(form.dateBdl, {'attr': {'class': 'datepicker'}}) }}
+          </div>
+        </div>
+
+        
+        {# A livrer ? #}
+        <div class="form-group">
+          <div class="col-sm-offset-3 col-sm-10">
+            <div class="checkbox">
+              <label>
+                {{ form_widget(form.toDelivered) }} A livrer ?
+              </label>
+            </div>
+          </div>
+        </div>
+
+        {# Is Delivered #}
+        <div class="form-group">
+          <div class="col-sm-3 control-label" >
+            <label>
+            {{ form_widget(form.isDelivered) }} Livrée ?
+            </label>
+          </div>
+
+          <div class="col-sm-8">
+            {{ form_widget(form.dateDelivered, {'attr': {'class': 'datepicker'}}) }}
+          </div>
+        </div>
+        
+      </div>
+
+    </div>
+
+
+    <div class="col-md-12">
+        <hr>
+
+        <!-- PRODUCT -->
+        <div class="col-md-6">
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Produit</th>
+                <th>Qty</th>
+                <th>Qty Cadeau</th>
+                <th>Prix forcé</th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody class="commandeProducts" 
+              data-prototype="
+                   {{ include('Bdl/prototype_product.html.twig', { 'form': form.commandeProducts.vars.prototype }) | escape }}
+               ">
+
+            {% for commandeProduct in form.commandeProducts %}
+                <tr>
+                  <td>{{ form_widget(commandeProduct.product) }}</td>
+                  <td>{{ form_widget(commandeProduct.qty, {'attr': {'size': '10'}}) }}</td>
+                  <td>{{ form_widget(commandeProduct.qtyGift, {'attr': {'size': '10'}}) }}</td>
+                  <td>{{ form_widget(commandeProduct.forcedPrice, {'attr': {'size': '10'}}) }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+
+        </div>
+
+
+        <!-- SERVICE -->
+        <div class="col-md-6">
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Service</th>
+                <th>Montant</th>
+              </tr>
+            </thead>
+            <tbody class="commandeServices" 
+              data-prototype="
+                   {{ include('Bdl/prototype_service.html.twig', { 'form': form.commandeServices.vars.prototype }) | escape }}
+               ">
+
+            {% for commandeService in form.commandeServices %}
+                <tr>
+                  <td>{{ form_widget(commandeService.service) }}</td>
+                  <td>{{ form_widget(commandeService.amt) }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+
+        </div>
+
+    </div>
+
+
+  {{ form_widget(form.save, {'attr': {'class': 'btn btn-primary'}}) }} 
+
+  {{ form_rest(form) }}
+  
+  {{ form_end(form) }}
+
+</div>
+
+
+<script>
+  var collectionProductHolder = $('tbody.commandeProducts');
+  var collectionServiceHolder = $('tbody.commandeServices');
+
+  var addCommandeProductsLink = $('<a href="#"><div class="glyphicon glyphicon-plus-sign"></div> Ajouter un produit</a>');
+  var addCommandeServicesLink = $('<a href="#"><div class="glyphicon glyphicon-plus-sign"></div> Ajouter un service</a>');
+
+  var newLinkProduct = $('<tr></tr>').append(addCommandeProductsLink);
+  var newLinkService = $('<tr></tr>').append(addCommandeServicesLink);
+
+  $(document).ready(function() {
+      initElementForm(collectionProductHolder, addCommandeProductsLink, newLinkProduct);
+
+      initElementForm(collectionServiceHolder, addCommandeServicesLink, newLinkService);
+  });
+
+
+  function initElementForm(collectionHolder, addLink, newLink) {
+      collectionHolder.find('tr').each(function() {
+          addCommandeElementFormDeleteLink($(this));
+      });
+      collectionHolder.append(newLink);
+
+      addLink.on('click', function(e) {
+          e.preventDefault();
+
+          addCommandeElementForm(collectionHolder, newLink);
+      });
+  }
+
+  function addCommandeElementForm(collectionHolder, newLink) {
+      var prototype = collectionHolder.attr('data-prototype');
+
+      var newForm = prototype.replace(/__name__/g, collectionHolder.children().length);
+
+      var $newFormLi = $('<tr></tr>').append(newForm);
+      addCommandeElementFormDeleteLink($newFormLi);
+      newLink.before($newFormLi);
+  }
+
+  function addCommandeElementFormDeleteLink($formTr) {
+      var removeFormA = $('<td><a href="#"><div class="glyphicon glyphicon-minus-sign"></div></a></td>');
+      $formTr.append(removeFormA);
+
+      removeFormA.on('click', function(e) {
+          e.preventDefault();
+
+          $formTr.remove();
+      });
+  }
+
+</script>

@@ -20,72 +20,78 @@ class BdlRepository extends ServiceEntityRepository
         parent::__construct($registry, Bdl::class);
     }
 
-	public function getNextNumBdl() {
-	    $query = $this->getEntityManager()
-	        ->createQuery('SELECT b FROM FactuAppBundle:Bdl b ORDER BY b.numBdl desc')
-	        ->setMaxResults(1);
-	        
-	    try {
-	    	$bdl = $query->getSingleResult();
-	    	if ($bdl != null) {
-	    		return $bdl->getNumBdl() + 1;
-	    	} else {
-	        	return 1;
-	        } 
-	    } catch (\Doctrine\ORM\NoResultException $e) {
-	        return 1;
-	    }
-	}
+    public function getNextNumBdl()
+    {
+        try {
+            $bdl = $this->createQueryBuilder('c')
+                ->orderBy('c.numBdl', 'desc')
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getSingleResult();
+            if ($bdl != null) {
+                return $bdl->getNumBdl() + 1;
+            } else {
+                return 1;
+            }
+        } catch (\Doctrine\ORM\NoResultException $e) {
+            return 1;
+        }
+    }
 
-	public function getLastAdded() {
-	    $query = $this->getEntityManager()
-	        ->createQuery('SELECT b FROM FactuAppBundle:Bdl b ORDER BY b.id desc')
-	        ->setMaxResults(3);
-	        
-	    try {
-	    	return $query->getResult();
-	    } catch (\Doctrine\ORM\NoResultException $e) {
-	        return 1;
-	    }
-	}
+    public function getLastAdded()
+    {
+        return $this->createQueryBuilder('c')
+            ->orderBy('c.id', 'desc')
+            ->setMaxResults(3)
+            ->getQuery()
+            ->getResult();
+    }
 
-	public function getBdlToDelivery() {
-	    $query = $this->getEntityManager()
-	        ->createQuery('SELECT c FROM FactuAppBundle:Bdl c WHERE c.toDelivered = 1 AND c.isDelivered = 0');
-	        
-	    try {
-	    	return $query->getResult();
-	    } catch (\Doctrine\ORM\NoResultException $e) {
-	        return null;
-	    }
-	}
+    public function getBdlToDelivery()
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.toDelivered = 1')
+            ->andWhere('c.isDelivered = 0')
+            ->getQuery()
+            ->getResult();
+    }
 
-	public function getNbBdlToDelivery() {
-    	$listBdls = $this->getBdlToDelivery();
-    	if ($listBdls != null) {
-    		return count($listBdls);
-    	} else {
-        	return 0;
-        } 
-	}
+    public function getNbBdlToDelivery()
+    {
+        $listBdls = $this->getBdlToDelivery();
+        if ($listBdls != null) {
+            return count($listBdls);
+        } else {
+            return 0;
+        }
+    }
 
-	public function getBdlsByYearMonthDay($month, $year) {
-		$emConfig = $this->getEntityManager()->getConfiguration();
-	    $emConfig->addCustomDatetimeFunction('YEAR', 'DoctrineExtensions\Query\Mysql\Year');
-	    $emConfig->addCustomDatetimeFunction('MONTH', 'DoctrineExtensions\Query\Mysql\Month');
+    public function getBdlsByYearMonthDay($month, $year)
+    {
+        $emConfig = $this->getEntityManager()->getConfiguration();
+        $emConfig->addCustomDatetimeFunction('YEAR', 'DoctrineExtensions\Query\Mysql\Year');
+        $emConfig->addCustomDatetimeFunction('MONTH', 'DoctrineExtensions\Query\Mysql\Month');
 
-	    $qb = $this->createQueryBuilder('c');
-	    $qb->select('c')
-	       ->where('YEAR(c.dateBdl) = :year')
-	       ->andWhere('MONTH(c.dateBdl) = :month');
+        $qb = $this->createQueryBuilder('c');
+        $qb->select('c')
+            ->where('YEAR(c.dateBdl) = :year')
+            ->andWhere('MONTH(c.dateBdl) = :month');
 
-	    $qb->setParameter('year', $year)
-	       ->setParameter('month', $month);
+        $qb->setParameter('year', $year)
+            ->setParameter('month', $month);
 
-	    $qb->orderBy('c.dateBdl', 'ASC');
+        $qb->orderBy('c.dateBdl', 'ASC');
 
-	   	$listResult = $qb->getQuery()->getResult();
-	    return $listResult;
-	}
+        $listResult = $qb->getQuery()->getResult();
+        return $listResult;
+    }
 
+    public function remove(Bdl $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
 }

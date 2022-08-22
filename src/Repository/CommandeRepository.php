@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Commande;
+use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -20,109 +21,114 @@ class CommandeRepository extends ServiceEntityRepository
         parent::__construct($registry, Commande::class);
     }
 
-	public function getNextNumFactu() {
-	    $query = $this->getEntityManager()
-	        ->createQuery('SELECT c FROM FactuAppBundle:Commande c ORDER BY c.numFactu desc')
-	        ->setMaxResults(1);
-	        
-	    try {
-	    	$commande = $query->getSingleResult();
-	    	if ($commande != null) {
-	    		return $commande->getNumFactu() + 1;
-	    	} else {
-	        	return 1;
-	        } 
-	    } catch (\Doctrine\ORM\NoResultException $e) {
-	        return 1;
-	    }
-	}
+    public function getNextNumFactu()
+    {
+        try {
+            $commande = $this->createQueryBuilder('c')
+                ->orderBy("c.numFactu", "desc")
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getSingleResult();
+            if ($commande != null) {
+                return $commande->getNumFactu() + 1;
+            } else {
+                return 1;
+            }
+        } catch (\Doctrine\ORM\NoResultException $e) {
+            return 1;
+        }
+    }
 
-	public function getLastAdded() {
-	    $query = $this->getEntityManager()
-	        ->createQuery('SELECT c FROM FactuAppBundle:Commande c ORDER BY c.id desc')
-	        ->setMaxResults(3);
-	        
-	    try {
-	    	return $query->getResult();
-	    } catch (\Doctrine\ORM\NoResultException $e) {
-	        return 1;
-	    }
-	}
+    public function getLastAdded()
+    {
+        return $this->createQueryBuilder('c')
+        ->orderBy('c.id', 'desc')
+        ->setMaxResults(3)
+        ->getQuery()
+        ->getResult();
+    }
 
-	public function getCommandeToDelivery() {
-	    $query = $this->getEntityManager()
-	        ->createQuery('SELECT c FROM FactuAppBundle:Commande c WHERE c.toDelivered = 1 AND c.isDelivered = 0');
-	        
-	    try {
-	    	return $query->getResult();
-	    } catch (\Doctrine\ORM\NoResultException $e) {
-	        return null;
-	    }
-	}
+    public function getCommandeToDelivery()
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.toDelivered = 1')
+            ->andWhere('c.isDelivered = 0')
+            ->getQuery()
+            ->getResult();
+    }
 
-	public function getNbCommandeToDelivery() {
-    	$listCommandes = $this->getCommandeToDelivery();
-    	if ($listCommandes != null) {
-    		return count($listCommandes);
-    	} else {
-        	return 0;
-        } 
-	}
+    public function getNbCommandeToDelivery()
+    {
+        $listCommandes = $this->getCommandeToDelivery();
+        if ($listCommandes != null) {
+            return count($listCommandes);
+        } else {
+            return 0;
+        }
+    }
 
-	public function getCommandesByYearMonthDay($month, $year) {
-		$emConfig = $this->getEntityManager()->getConfiguration();
-	    $emConfig->addCustomDatetimeFunction('YEAR', 'DoctrineExtensions\Query\Mysql\Year');
-	    $emConfig->addCustomDatetimeFunction('MONTH', 'DoctrineExtensions\Query\Mysql\Month');
+    public function getCommandesByYearMonthDay($month, $year)
+    {
+        $emConfig = $this->getEntityManager()->getConfiguration();
+        $emConfig->addCustomDatetimeFunction('YEAR', 'DoctrineExtensions\Query\Mysql\Year');
+        $emConfig->addCustomDatetimeFunction('MONTH', 'DoctrineExtensions\Query\Mysql\Month');
 
-	    $qb = $this->createQueryBuilder('c');
-	    $qb->select('c')
-	       ->where('YEAR(c.dateFactu) = :year')
-	       ->andWhere('MONTH(c.dateFactu) = :month');
+        $qb = $this->createQueryBuilder('c');
+        $qb->select('c')
+            ->where('YEAR(c.dateFactu) = :year')
+            ->andWhere('MONTH(c.dateFactu) = :month');
 
-	    $qb->setParameter('year', $year)
-	       ->setParameter('month', $month);
+        $qb->setParameter('year', $year)
+            ->setParameter('month', $month);
 
-	    $qb->orderBy('c.dateFactu', 'ASC');
+        $qb->orderBy('c.dateFactu', 'ASC');
 
-	   	$listResult = $qb->getQuery()->getResult();
-	    return $listResult;
-	}
+        $listResult = $qb->getQuery()->getResult();
+        return $listResult;
+    }
 
-	public function findAllWithSpecificBdl($bdl) {
+    public function findAllWithSpecificBdl($bdl)
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c')
+            ->where('c.bdl = :bdl')
+            ->setParameter('bdl', $bdl)
+            ->orderBy('c.dateFactu', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 
-	    $qb = $this->createQueryBuilder('c');
-	    $qb->select('c')
-	       ->where('c.bdl = :bdl');
+    public function findAllOrderByDateFactuDesc()
+    {
 
-	    $qb->setParameter('bdl', $bdl);
+        $qb = $this->createQueryBuilder('c');
+        $qb->select('c');
 
-	    $qb->orderBy('c.dateFactu', 'DESC');
+        $qb->orderBy('c.dateFactu', 'ASC');
 
-	   	$listResult = $qb->getQuery()->getResult();
-	    return $listResult;
-	}
-
-	public function findAllOrderByDateFactuDesc() {
-
-	    $qb = $this->createQueryBuilder('c');
-	    $qb->select('c');
-
-	    $qb->orderBy('c.dateFactu', 'ASC');
-
-	   	$listResult = $qb->getQuery()->getResult();
-	    return $listResult;
-	}
+        $listResult = $qb->getQuery()->getResult();
+        return $listResult;
+    }
 
 
-	public function getCommandeWithBdlId($id) {
-	    $qb = $this->createQueryBuilder('c');
-	    $qb->select('c')
-	       ->where('c.bdl = :id');
+    public function getCommandeWithBdlId($id)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb->select('c')
+            ->where('c.bdl = :id');
 
-	    $qb->setParameter('id', $id);
+        $qb->setParameter('id', $id);
 
-	   	$listResult = $qb->getQuery()->getResult();
-	    return $listResult;
-	}
+        $listResult = $qb->getQuery()->getResult();
+        return $listResult;
+    }
 
+    public function remove(Commande $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
 }
