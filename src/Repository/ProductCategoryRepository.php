@@ -21,14 +21,10 @@ class ProductCategoryRepository extends ServiceEntityRepository
     }
 
 	public function getFollowedStatCategories() {
-	    $query = $this->getEntityManager()
-	        ->createQuery('SELECT c FROM FactuAppBundle:ProductCategory c WHERE c.isFollowedStat = 1');
-	        
-	    try {
-	    	return $query->getResult(); 
-	    } catch (\Doctrine\ORM\NoResultException $e) {
-	        return null;
-	    }
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.isFollowedStat = 1')
+            ->getQuery()
+            ->getResult();
 	}
 
     public function remove(ProductCategory $entity, bool $flush = false): void

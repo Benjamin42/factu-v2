@@ -69,19 +69,13 @@ class CommandeRepository extends ServiceEntityRepository
 
     public function getCommandesByYearMonthDay($month, $year)
     {
-        $emConfig = $this->getEntityManager()->getConfiguration();
-        $emConfig->addCustomDatetimeFunction('YEAR', 'DoctrineExtensions\Query\Mysql\Year');
-        $emConfig->addCustomDatetimeFunction('MONTH', 'DoctrineExtensions\Query\Mysql\Month');
-
         $qb = $this->createQueryBuilder('c');
         $qb->select('c')
             ->where('YEAR(c.dateFactu) = :year')
-            ->andWhere('MONTH(c.dateFactu) = :month');
-
-        $qb->setParameter('year', $year)
-            ->setParameter('month', $month);
-
-        $qb->orderBy('c.dateFactu', 'ASC');
+            ->andWhere('MONTH(c.dateFactu) = :month')
+            ->setParameter('year', $year)
+            ->setParameter('month', $month)
+            ->orderBy('c.dateFactu', 'ASC');
 
         $listResult = $qb->getQuery()->getResult();
         return $listResult;
