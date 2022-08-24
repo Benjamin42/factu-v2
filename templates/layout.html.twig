@@ -51,13 +51,12 @@
                     </ul>
                 </li>
 
-                {% if is_granted('ROLE_ADMIN_XXX') %}
+                {% if is_granted('ROLE_ADMIN') %}
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><div class="glyphicon glyphicon-cog"></div>&nbsp;<span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="{{ path('parameter_home') }}">Paramétrage</a></li>
                             <li><a href="{{ path('type_home') }}">Types</a></li>
-                            <li><a href="{{ path('import_csv_home')}}">Imports</a></li>
                             <li><a href="{{ path('user_home')}}">Utilisateurs</a></li>
                         </ul>
                     </li>

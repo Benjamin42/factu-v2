@@ -5,20 +5,27 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AbstractController
 {
+    private $em;
     private $userRepository;
+    private $passwordHasher;
 
-    public function __construct(
-        UserRepository $userRepository
+    public function __construct(EntityManagerInterface      $entityManager,
+                                UserRepository              $userRepository,
+                                UserPasswordHasherInterface $passwordHasher
     )
     {
+        $this->em = $entityManager;
         $this->userRepository = $userRepository;
+        $this->passwordHasher = $passwordHasher;
     }
 
     #[Route('/user', name: 'user_home')]
@@ -36,7 +43,7 @@ class UserController extends AbstractController
     {
         $user = $this->userRepository->find($id);
 
-        return $this->render('FactuUserBundle:User:view.html.twig', array(
+        return $this->render('User/view.html.twig', array(
             'user' => $user
         ));
     }
@@ -51,7 +58,11 @@ class UserController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            // TODO : Encoder le mot de passe
+            $hashedPassword = $this->passwordHasher->hashPassword(
+                $user,
+                $user->getPassword()
+            );
+            $user->setPassword($hashedPassword);
 
             $this->em->persist($user);
             $this->em->flush();
@@ -83,7 +94,11 @@ class UserController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            // TODO : Encoder le mot de passe
+            $hashedPassword = $this->passwordHasher->hashPassword(
+                $user,
+                $user->getPassword()
+            );
+            $user->setPassword($hashedPassword);
 
             $this->em->persist($user);
             $this->em->flush();
@@ -157,7 +172,7 @@ class UserController extends AbstractController
 
         return $this->render('User/delete.html.twig', array(
             'user' => $user,
-            'form'   => $form->createView()
+            'form' => $form->createView()
         ));
     }
 }
