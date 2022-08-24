@@ -46,6 +46,7 @@ class ServiceController extends AbstractController
     #[Route('/service/add', name: 'service_add')]
     public function addAction(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $service = new Service();
 
         $form = $this->createForm(ServiceType::class, $service);
@@ -71,6 +72,7 @@ class ServiceController extends AbstractController
     #[Route('/service/edit/{id}', name: 'service_edit')]
     public function editAction($id, Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $service = $this->serviceRepository->find($id);
         if ($service == null) {
             throw $this->createNotFoundException("Le service d'id " . $id . " n'existe pas.");
@@ -98,6 +100,7 @@ class ServiceController extends AbstractController
     #[Route('/service/delete/{id}', name: 'service_delete')]
     public function deleteAction($id, Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $service = $this->serviceRepository->find($id);
         if (null === $service) {
             throw new NotFoundHttpException("Le service d'id " . $id . " n'existe pas.");

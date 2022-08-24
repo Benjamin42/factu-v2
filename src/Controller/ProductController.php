@@ -70,6 +70,7 @@ class ProductController extends AbstractController
     #[Route('/product/add', name: 'product_add')]
     public function addAction(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $product = new Product();
 
         $form = $this->createForm(ProductType::class, $product);
@@ -95,6 +96,7 @@ class ProductController extends AbstractController
     #[Route('/product/edit/{id}', name: 'product_edit')]
     public function editAction($id, Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $product = $this->productRepository->find($id);
         if ($product == null) {
             throw $this->createNotFoundException("Le produit d'id " . $id . " n'existe pas.");
@@ -122,6 +124,7 @@ class ProductController extends AbstractController
     #[Route('/product/delete/{id}', name: 'product_delete')]
     public function deleteAction($id, Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $product = $this->productRepository->find($id);
         if (null === $product) {
             throw new NotFoundHttpException("Le produit d'id " . $id . " n'existe pas.");

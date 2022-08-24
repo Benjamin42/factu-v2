@@ -31,8 +31,10 @@
             <td>{{ client.ville }}</td>
             <td>{{ client.pays.name }}</td>
             <td style="width:40px;">
+                {% if is_granted('ROLE_ADMIN') %}
                 <a href="{{ path('commande_add', {'id': client.id}) }}"><div class="glyphicon glyphicon-edit" data-toggle="tooltip" data-placement="top" title="Commande"></div></a>
                 <a href="{{ path('bdl_add', {'id': client.id}) }}"><div class="glyphicon glyphicon-share" data-toggle="tooltip" data-placement="top" title="BdL"></div></a>
+                {% endif %}
             </td>
             {% endfor %}
 
@@ -40,8 +42,9 @@
 
     </table>
 
+    {% if is_granted('ROLE_ADMIN') %}
     <a href="{{ path('client_add') }}" class="btn btn-default">Ajouter Client</a>
-
+    {% endif %}
 
     <script>
 

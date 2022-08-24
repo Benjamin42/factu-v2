@@ -84,6 +84,7 @@ class CommandeController extends AbstractController
     #[Route('/commande/add/{id}', name: 'commande_add')]
     public function addActionWithId($id, Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $commande = new Commande();
 
         if ($id) {
@@ -128,6 +129,7 @@ class CommandeController extends AbstractController
     #[Route('/commande/edit/{id}', name: 'commande_edit')]
     public function editAction($id, Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $commande = $this->commandeRepository->find($id);
         if ($commande == null) {
             throw $this->createNotFoundException("La commande d'id " . $id . " n'existe pas.");
@@ -164,6 +166,7 @@ class CommandeController extends AbstractController
     #[Route('/commande/delete/{id}', name: 'commande_delete')]
     public function deleteAction($id, Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $commande = $this->commandeRepository->find($id);
         if (null === $commande) {
             throw new NotFoundHttpException("La commande d'id " . $id . " n'existe pas.");

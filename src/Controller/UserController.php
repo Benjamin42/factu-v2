@@ -44,6 +44,7 @@ class UserController extends AbstractController
     #[Route('/user/add', name: 'user_add')]
     public function addAction(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $user = new User();
 
         $form = $this->createForm(UserType::class, $user);
@@ -70,6 +71,7 @@ class UserController extends AbstractController
     #[Route('/user/edit/{id}', name: 'user_edit')]
     public function editAction($id, Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $user = $this->userRepository->find($id);
         $user->setPassword("");
 
@@ -132,6 +134,7 @@ class UserController extends AbstractController
     #[Route('/user/delete/{id}', name: 'user_delete')]
     public function deleteAction($id, Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $user = $this->userRepository->find($id);
         if (null === $user) {
             throw new NotFoundHttpException("L'utilisateur d'id " . $id . " n'existe pas.");

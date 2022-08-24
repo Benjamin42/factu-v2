@@ -53,6 +53,7 @@ class ClientController extends AbstractController
     #[Route('/client/add', name: 'client_add')]
     public function addAction(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $client = new Client();
         $france = $this->countryRepository->findOneBy(["code" => "FR"]);
         if ($france) {
@@ -82,6 +83,7 @@ class ClientController extends AbstractController
     #[Route('/client/edit/{id}', name: 'client_edit')]
     public function editAction($id, Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $client = $this->clientRepository->find($id);
         if ($client == null) {
             throw $this->createNotFoundException("Le client d'id " . $id . " n'existe pas.");
@@ -106,6 +108,7 @@ class ClientController extends AbstractController
     #[Route('/client/delete/{id}', name: 'client_delete')]
     public function deleteAction($id, Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $client = $this->clientRepository->find($id);
         if (null === $client) {
             throw new NotFoundHttpException("Le client d'id " . $id . " n'existe pas.");

@@ -45,7 +45,9 @@
 
     </table>
 
+    {% if is_granted('ROLE_ADMIN') %}
     <a href="{{ path('bdl_add_no_id') }}" class="btn btn-default">Ajouter Bon de livraison</a>
+    {% endif %}
 
 {% endblock %}
 

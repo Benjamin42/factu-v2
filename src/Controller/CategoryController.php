@@ -38,6 +38,7 @@ class CategoryController extends AbstractController
     #[Route('/category/add', name: 'category_add')]
     public function addAction(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $cat = new ProductCategory();
 
         $form = $this->createForm(ProductCategoryType::class, $cat);
@@ -61,6 +62,7 @@ class CategoryController extends AbstractController
     #[Route('/category/edit/{id}', name: 'category_edit')]
     public function editAction($id, Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $cat = $this->productCategoryRepository->find($id);
         if ($cat == null) {
             throw $this->createNotFoundException("La catégorie d'id " . $id . " n'existe pas.");
@@ -86,6 +88,7 @@ class CategoryController extends AbstractController
     #[Route('/category/delete/{id}', name: 'category_delete')]
     public function deleteAction($id, Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $cat = $this->productCategoryRepository->find($id);
         if (null === $cat) {
             throw new NotFoundHttpException("La catégorie d'id " . $id . " n'existe pas.");

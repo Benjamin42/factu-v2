@@ -132,12 +132,14 @@ class BdlController extends AbstractController
     #[Route('/bdl/add', name: 'bdl_add_no_id')]
     public function addAction(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         return $this->addActionWithId(null, $request);
     }
 
     #[Route('/bdl/add/{id}', name: 'bdl_add')]
     public function addActionWithId($id, Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $bdl = new Bdl();
 
         if ($id) {
@@ -184,6 +186,7 @@ class BdlController extends AbstractController
     #[Route('/bdl/edit/{id}', name: 'bdl_edit')]
     public function editAction($id, Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $bdl = $this->bdlRepository->find($id);
         if ($bdl == null) {
             throw $this->createNotFoundException("Le bon de livraison d'id " . $id . " n'existe pas.");
@@ -220,6 +223,7 @@ class BdlController extends AbstractController
     #[Route('/bdl/delete/{id}', name: 'bdl_delete')]
     public function deleteAction($id, Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $bdl = $this->bdlRepository->find($id);
         if (null === $bdl) {
             throw new NotFoundHttpException("Le bon de livraison d'id " . $id . " n'existe pas.");
