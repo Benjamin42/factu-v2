@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Factu</title>
+
+    <link rel="stylesheet" href="{{ asset('assets/dist/css/bootstrap.min.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ asset('assets/dist/css/jquery.dataTables.min.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ asset('assets/dist/css/bootstrap-datepicker3.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('assets/dist/css/chosen.css') }}" type="text/css">
+
+    <style>
+        .very-small {
+            font-size: 65%;
+        }
+
+        .print {
+            display: none;
+        }
+
+        #table-stats span, #table span, #table-commande span, #table-bdl span {
+            display: none;
+        }
+
+        @media print {
+            html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                font-size: 20px;
+            }
+
+            .no-print {
+                display: none;
+            }
+
+            .print {
+                display: block;
+            }
+
+            div.footer {
+                position: absolute;
+                bottom: 0;
+            }
+        }
+    </style>
+
+    <link rel="stylesheet" href="{{ asset('assets/css/datepicker.css') }}" type="text/css"/>
+
+    <script src="{{ asset('assets/dist/js/jquery.min.js') }}"></script>
+    <script src="{{ asset('assets/dist/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('assets/dist/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/dist/js/bootstrap-datepicker.min.js') }}"></script>
+    <script src="{{ asset('assets/dist/js/bootstrap-datepicker.fr.min.js') }}"></script>
+
+    <script type="text/javascript" src="{{ asset('assets/dist/js/amcharts.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/dist/js/serial.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/dist/js/themes/none.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/dist/js/chosen.jquery.js') }}"></script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="row">
+
+        {% block body %}
+        {% endblock %}
+
+    </div>
+
+</div>
+
+</body>
+</html>

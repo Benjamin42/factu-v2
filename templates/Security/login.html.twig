@@ -1,0 +1,54 @@
+{% extends "anonymous_layout.html.twig" %}
+
+{% block body %}
+    <style>
+        body {
+            background-image: url("{{ asset('assets/img/vignoble-de-bouzy-grand-cru-12.jpg') }}");
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+        .well {
+            width: 400px;
+            margin-top: 50px;
+        }
+
+        input,button {
+            margin-top: 10px;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="http://getbootstrap.com/examples/signin/signin.css">
+
+    <div class="container">
+        <center>
+            <div class="well">
+                {% if error is defined and error.message is defined %}
+                    <div class="alert alert-danger">{{ error.message }}</div>
+                {% endif %}
+
+                <p>
+                    {% for message in app.session.flashbag.get('notice') %}
+                <div class="alert alert-success" role="alert">{{ message }}</div>
+                {% endfor %}
+                </p>
+
+                <form class="form-signin" action="{{ path('app_login') }}" method="post">
+                    <h2 class="form-signin-heading">Connexion</h2>
+
+
+                    <label for="username" class="sr-only">Email address</label>
+                    <input type="text" id="username" name="_username" class="form-control" placeholder="Login" required
+                           autofocus>
+
+                    <label for="username" class="sr-only">Password</label>
+                    <input type="password" id="password" name="_password" class="form-control" placeholder="Password"
+                           required>
+
+
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">Connexion</button>
+                </form>
+            </div>
+        </center>
+
+    </div>
+
+{% endblock %}

@@ -153,7 +153,8 @@
                 <li class=""><a href="{{ path('client_home') }}">Clients</a></li>
 
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Facturation <span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Facturation <span
+                                class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li><a href="{{ path('commande_home') }}">Facture</a></li>
                         <li><a href="{{ path('bdl_home') }}">Bon de livraison</a></li>
@@ -162,7 +163,8 @@
 
 
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><div class="glyphicon glyphicon-stats"></div>&nbsp;Stats <span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <div class="glyphicon glyphicon-stats"></div>&nbsp;Stats <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li><a href="{{ path('stat_end_month') }}">Fin de mois</a></li>
                         <li><a href="{{ path('stat_chart_month') }}">Graphique mois</a></li>
@@ -170,100 +172,22 @@
                 </li>
             </ul>
 
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><div class="glyphicon glyphicon-user"></div>&nbsp;{{ app.user ? app.user.formatedLabel : '' }} <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+
+                        <li><a href="{{ path('user_edit_profil') }}">Modifier mon compte</a></li>
+                        {#
+                        <li><a href="{{ path('logout') }}">Déconnexion</a></li>
+                        #}
+                    </ul>
+                </li>
+            </ul>
+
         </div>
+    </div>
 </nav>
-
-{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-    <nav class="navbar navbar-inverse navbar-static-top">
-        <div class="container">
-
-            <div class="navbar-header">
-                <a class="navbar-brand glyphicon glyphicon-home" href="{{ path('home' ) }}"></a>
-            </div>
-
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Catalogue<span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="{{ path('product_home') }}">Produits</a></li>
-                            <li><a href="{{ path('service_home') }}">Services</a></li>
-                        </ul>
-                    </li>
-
-                    <li class=""><a href="{{ path('client_home') }}">Clients</a></li>
-
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Facturation <span
-                                    class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="{{ path('commande_home') }}">Facture</a></li>
-                            <li><a href="{{ path('bdl_home') }}">Bon de livraison</a></li>
-                        </ul>
-                    </li>
-
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <div class="glyphicon glyphicon-stats"></div>&nbsp;Stats <span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="{{ path('stat_end_month') }}">Fin de mois</a></li>
-                            <li><a href="{{ path('stat_chart_month') }}">Graphique mois</a></li>
-                        </ul>
-                    </li>
-
-                    {% if app.session.get('nbCmdToDeliver') > 0 %}
-                        <li class="">
-                            <a href="{{ path('map_delivery') }}">
-                                <div class="glyphicon glyphicon-globe"></div>
-                                &nbsp;Carte des livraisons&nbsp;<span
-                                        class="badge">{{ app.session.get('nbCmdToDeliver') }}</span>
-
-                            </a>
-                        </li>
-                    {% endif %}
-
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <div class="glyphicon glyphicon-envelope"></div>&nbsp;Mailing <span
-                                    class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="#">Envoi</a></li>
-                            <li><a href="#">Liste</a></li>
-                        </ul>
-                    </li>
-
-                    {% if is_granted('ROLE_ADMIN') %}
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <div class="glyphicon glyphicon-cog"></div>&nbsp;<span class="caret"></span></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="{{ path('parameter_home') }}">Paramétrage</a></li>
-                                <li><a href="{{ path('type_home') }}">Types</a></li>
-                                <li><a href="{{ path('import_csv_home') }}">Imports</a></li>
-                                <li><a href="{{ path('user_home') }}">Utilisateurs</a></li>
-                            </ul>
-                        </li>
-                    {% endif %}
-                </ul>
-
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <div class="glyphicon glyphicon-user"></div>&nbsp;{{ app.user.formatedLabel }} <span
-                                    class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="{{ path('user_edit_profil') }}">Modifier mon compte</a></li>
-                            <li><a href="{{ path('logout') }}">Déconnexion</a></li>
-                        </ul>
-                    </li>
-                </ul>
-
-            </div>
-
-        </div>
-    </nav>
-{% endif %}
 
 <div class="container">
 
