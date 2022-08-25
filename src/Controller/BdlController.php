@@ -49,7 +49,7 @@ class BdlController extends AbstractController
     {
         $listBdls = $this->bdlRepository->findAll();
 
-        return $this->render('bdl/index.html.twig', [
+        return $this->render('Bdl/index.html.twig', [
             'listBdls' => $listBdls
         ]);
     }
@@ -63,7 +63,7 @@ class BdlController extends AbstractController
 
         $listBdlDto = $this->calcStock($bdl);
 
-        return $this->render('bdl/view.html.twig', [
+        return $this->render('Bdl/view.html.twig', [
             'bdl' => $bdl,
             'listBdlDto' => $listBdlDto,
             'listCommandes' => $listCommandes
@@ -75,7 +75,7 @@ class BdlController extends AbstractController
     {
         $bdl = $this->bdlRepository->find($id);
 
-        return $this->render('bdl/view_factu.html.twig', [
+        return $this->render('Bdl/view_factu.html.twig', [
             'bdl' => $bdl,
             'parameterRepo' => $this->parameterRepository,
             'priceRepo' => $this->priceRepository
@@ -88,7 +88,7 @@ class BdlController extends AbstractController
         $bdl = $this->bdlRepository->find($id);
         $listBdlDto = $this->calcStock($bdl);
 
-        return $this->render('bdl/view_cmd.html.twig', [
+        return $this->render('Bdl/view_cmd.html.twig', [
             'listBdlDto' => $listBdlDto,
         ]);
     }
@@ -177,7 +177,7 @@ class BdlController extends AbstractController
         }
 
 
-        return $this->render('bdl/add.html.twig', array(
+        return $this->render('Bdl/add.html.twig', array(
             'form' => $form->createView(),
             'bdl' => $bdl
         ));
@@ -214,7 +214,7 @@ class BdlController extends AbstractController
             return $this->redirect($this->generateUrl('bdl_view', array('id' => $bdl->getId())));
         }
 
-        return $this->render('bdl/edit.html.twig', array(
+        return $this->render('Bdl/edit.html.twig', array(
             'form' => $form->createView(),
             'bdl' => $bdl
         ));
@@ -245,7 +245,7 @@ class BdlController extends AbstractController
             return $this->redirect($this->generateUrl('bdl_home'));
         }
 
-        return $this->render('bdl/delete.html.twig', array(
+        return $this->render('Bdl/delete.html.twig', array(
             'bdl' => $bdl,
             'form'   => $form->createView()
         ));

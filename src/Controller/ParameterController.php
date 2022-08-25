@@ -30,7 +30,7 @@ class ParameterController extends AbstractController
     {
         $listParameters = $this->parameterRepository->findAll();
 
-        return $this->render('parameter/index.html.twig', [
+        return $this->render('Parameter/index.html.twig', [
             'listParameters' => $listParameters
         ]);
     }
@@ -55,7 +55,7 @@ class ParameterController extends AbstractController
             return $this->redirect($this->generateUrl('parameter_home'));
         }
 
-        return $this->render('parameter/edit.html.twig', array(
+        return $this->render('Parameter/edit.html.twig', array(
             'form' => $form->createView(), 'parameter' => $parameter
         ));
     }

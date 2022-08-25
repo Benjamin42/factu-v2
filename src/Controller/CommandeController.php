@@ -48,7 +48,7 @@ class CommandeController extends AbstractController
     {
         $listCommandes = $this->commandeRepository->findAll();
 
-        return $this->render('commande/index.html.twig', [
+        return $this->render('Commande/index.html.twig', [
             'listCommandes' => $listCommandes
         ]);
     }
@@ -58,7 +58,7 @@ class CommandeController extends AbstractController
     {
         $commande = $this->commandeRepository->find($id);
 
-        return $this->render('commande/view.html.twig', [
+        return $this->render('Commande/view.html.twig', [
             'commande' => $commande
         ]);
     }
@@ -68,7 +68,7 @@ class CommandeController extends AbstractController
     {
         $commande = $this->commandeRepository->find($id);
 
-        return $this->render('commande/view_factu.html.twig', [
+        return $this->render('Commande/view_factu.html.twig', [
             'commande' => $commande,
             'parameterRepo' => $this->parameterRepository,
             'priceRepo' => $this->priceRepository
@@ -121,7 +121,7 @@ class CommandeController extends AbstractController
         }
 
 
-        return $this->render('commande/add.html.twig', array(
+        return $this->render('Commande/add.html.twig', array(
             'form' => $form->createView()
         ));
     }
@@ -157,7 +157,7 @@ class CommandeController extends AbstractController
             return $this->redirect($this->generateUrl('commande_view', array('id' => $commande->getId())));
         }
 
-        return $this->render('commande/edit.html.twig', array(
+        return $this->render('Commande/edit.html.twig', array(
             'form' => $form->createView(),
             'commande' => $commande
         ));
@@ -187,7 +187,7 @@ class CommandeController extends AbstractController
             return $this->redirect($this->generateUrl('commande_home'));
         }
 
-        return $this->render('commande/delete.html.twig', array(
+        return $this->render('Commande/delete.html.twig', array(
             'commande' => $commande,
             'form' => $form->createView()
         ));

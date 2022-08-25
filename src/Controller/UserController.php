@@ -118,18 +118,23 @@ class UserController extends AbstractController
     #[Route('/user/edit_profil', name: 'user_edit_profil')]
     public function editMyProfilAction(Request $request)
     {
-        $user = $this->getUser();
+        $tmpUser = $this->getUser();
+        $user = $this->userRepository->find($tmpUser->getId());
         $user->setPassword("");
 
         if ($user == null) {
-            throw $this->createNotFoundException("L'utilisateur d'id " . $id . " n'existe pas.");
+            throw $this->createNotFoundException("L'utilisateur d'id " . $user->getId() . " n'existe pas.");
         }
 
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            // TODO : Encoder le mot de passe
+            $hashedPassword = $this->passwordHasher->hashPassword(
+                $user,
+                $user->getPassword()
+            );
+            $user->setPassword($hashedPassword);
 
             $this->em->persist($user);
             $this->em->flush();

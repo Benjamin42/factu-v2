@@ -35,7 +35,7 @@ class ClientController extends AbstractController
     {
         $listClients = $this->clientRepository->findAll();
 
-        return $this->render('client/index.html.twig', [
+        return $this->render('Client/index.html.twig', [
             'listClients' => $listClients
         ]);
     }
@@ -45,7 +45,7 @@ class ClientController extends AbstractController
     {
         $client = $this->clientRepository->find($id);
 
-        return $this->render('client/view.html.twig', [
+        return $this->render('Client/view.html.twig', [
             'client' => $client
         ]);
     }
@@ -75,7 +75,7 @@ class ClientController extends AbstractController
             return $this->redirect($this->generateUrl('client_view', array('id' => $client->getId())));
         }
 
-        return $this->render('client/add.html.twig', array(
+        return $this->render('Client/add.html.twig', array(
             'form' => $form->createView()
         ));
     }
@@ -100,7 +100,7 @@ class ClientController extends AbstractController
             return $this->redirect($this->generateUrl('client_view', array('id' => $client->getId())));
         }
 
-        return $this->render('client/edit.html.twig', array(
+        return $this->render('Client/edit.html.twig', array(
             'form' => $form->createView(), 'client' => $client
         ));
     }
@@ -124,7 +124,7 @@ class ClientController extends AbstractController
             return $this->redirect($this->generateUrl('client_home'));
         }
 
-        return $this->render('client/delete.html.twig', array(
+        return $this->render('Client/delete.html.twig', array(
             'client' => $client,
             'form'   => $form->createView()
         ));
