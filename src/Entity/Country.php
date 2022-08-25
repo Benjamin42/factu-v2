@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Country
  *
- * @ORM\Table()
+ * @ORM\Table("Country")
  * @ORM\Entity(repositoryClass="App\Repository\CountryRepository")
  */
 class Country

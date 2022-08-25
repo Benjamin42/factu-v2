@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * Commande
  *
- * @ORM\Table()
+ * @ORM\Table("Commande")
  * @ORM\Entity(repositoryClass="App\Repository\CommandeRepository")
  */
 class Commande
